@@ -84,6 +84,13 @@ RUN { \
 RUN set -eux; \
 	version='5.7.2'; \
 	sha1='c97c037d942e974eb8524213a505268033aff6c8'; \
+	cuid='1001';\
+	cgid='1001';\
+	\
+	sed -i 's/\(www-data:x:\)[0-9]*:[0-9]*:/\1'"$cuid"':'"$cgid"':/' /etc/passwd ;\
+	sed -i 's/\(www-data:x:\)[0-9]*:[0-9]*:/\1'"$cuid"':'"$cgid"':/' /etc/passwd- ;\
+	sed -i 's/\(www-data:x:\)[0-9]*:/\1'"$cgid"':/' /etc/group ;\
+	sed -i 's/\(www-data:x:\)[0-9]*:/\1'"$cgid"':/' /etc/group- ;\
 	\
 	curl -o wordpress.tar.gz -fL "https://wordpress.org/wordpress-$version.tar.gz"; \
 	echo "$sha1 *wordpress.tar.gz" | sha1sum -c -; \
@@ -123,6 +130,8 @@ VOLUME /var/www/html
 
 COPY --chown=www-data:www-data wp-config-docker.php /usr/src/wordpress/
 COPY docker-entrypoint.sh /usr/local/bin/
+
+USER 1001
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
