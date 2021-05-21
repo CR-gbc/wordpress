@@ -4,6 +4,7 @@ set -Eeuo pipefail
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	uid="$(id -u)"
 	gid="$(id -g)"
+	echo "$uid"
 	if [ "$uid" = '0' ]; then
 		case "$1" in
 			apache2*)
