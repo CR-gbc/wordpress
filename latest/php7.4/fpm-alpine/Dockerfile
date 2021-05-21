@@ -124,7 +124,8 @@ RUN set -eux; \
 		mkdir "wp-content/$dir"; \
 	done; \
 	chown -R www-data:www-data wp-content; \
-	chmod -R 777 wp-content
+	chmod -R 777 wp-content; \
+	chown 1001:1001 /var/www/html
 
 VOLUME /var/www/html
 
