@@ -63,7 +63,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 				sourceTarArgs+=( --exclude "./$contentPath" )
 			fi
 		done
-		tar "${sourceTarArgs[@]}" . | tar "${targetTarArgs[@]}"
+		echo "tar ${sourceTarArgs[@]} . | tar ${targetTarArgs[@]}"
 		echo >&2 "Complete! WordPress has been successfully copied to $PWD"
 	fi
 
