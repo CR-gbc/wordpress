@@ -84,13 +84,6 @@ RUN { \
 RUN set -eux; \
 	version='5.7.2'; \
 	sha1='c97c037d942e974eb8524213a505268033aff6c8'; \
-	cuid='1001';\
-	cgid='1001';\
-	\
-	sed -i 's/\(www-data:x:\)[0-9]*:[0-9]*:/\1'"$cuid"':'"$cgid"':/' /etc/passwd ;\
-	sed -i 's/\(www-data:x:\)[0-9]*:[0-9]*:/\1'"$cuid"':'"$cgid"':/' /etc/passwd- ;\
-	sed -i 's/\(www-data:x:\)[0-9]*:/\1'"$cgid"':/' /etc/group ;\
-	sed -i 's/\(www-data:x:\)[0-9]*:/\1'"$cgid"':/' /etc/group- ;\
 	\
 	curl -o wordpress.tar.gz -fL "https://wordpress.org/wordpress-$version.tar.gz"; \
 	echo "$sha1 *wordpress.tar.gz" | sha1sum -c -; \
@@ -115,24 +108,13 @@ RUN set -eux; \
 		echo '# END WordPress'; \
 	} > /usr/src/wordpress/.htaccess; \
 	\
-	chown -R www-data:www-data /usr/src/wordpress; \
-# pre-create wp-content (and single-level children) for folks who want to bind-mount themes, etc so permissions are pre-created properly instead of root:root
-# wp-content/cache: https://github.com/docker-library/wordpress/issues/534#issuecomment-705733507
-	mkdir wp-content; \
-	for dir in /usr/src/wordpress/wp-content/*/ cache; do \
-		dir="$(basename "${dir%/}")"; \
-		mkdir "wp-content/$dir"; \
-	done; \
-	chown -R www-data:www-data wp-content; \
-	chmod -R 777 wp-content; \
-	chown 1001:1001 /var/www/html
+	chown -R www-data:0 /usr/src/wordpress; \
+	chgrp www-data:0 /var/www/html
 
 VOLUME /var/www/html
 
-COPY --chown=www-data:www-data wp-config-docker.php /usr/src/wordpress/
+COPY --chown=www-data:0 wp-config-docker.php /usr/src/wordpress/
 COPY docker-entrypoint.sh /usr/local/bin/
-
-USER 1001
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]

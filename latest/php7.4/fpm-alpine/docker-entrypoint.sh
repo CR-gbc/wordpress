@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+set -euo pipefail
 
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	uid="$(id -u)"
 	gid="$(id -g)"
-	echo "$uid"
 	if [ "$uid" = '0' ]; then
 		case "$1" in
 			apache2*)
@@ -64,8 +63,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 				sourceTarArgs+=( --exclude "./$contentPath" )
 			fi
 		done
-		echo "sourcetarargs ${sourceTarArgs[@]}"
-		echo "targettarargs ${targetTarArgs[@]}"
+		tar "${sourceTarArgs[@]}" . | tar "${targetTarArgs[@]}"
 		echo >&2 "Complete! WordPress has been successfully copied to $PWD"
 	fi
 
