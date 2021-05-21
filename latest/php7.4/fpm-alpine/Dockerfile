@@ -109,7 +109,7 @@ RUN set -eux; \
 	} > /usr/src/wordpress/.htaccess; \
 	\
 	chown -R www-data:0 /usr/src/wordpress; \
-	chgrp www-data:0 /var/www/html
+	chown www-data:0 /var/www/html
 
 VOLUME /var/www/html
 
