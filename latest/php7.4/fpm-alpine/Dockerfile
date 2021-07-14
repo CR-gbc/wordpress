@@ -112,6 +112,10 @@ RUN set -eux; \
 	chown www-data:0 /var/www/html; \
 	chmod 775 /var/www/html /usr/src/wordpress
 
+RUN set -eux; \
+	apk add --no-cache \
+	rsync
+		
 VOLUME /var/www/html
 
 COPY --chown=www-data:0 wp-config-docker.php /usr/src/wordpress/
