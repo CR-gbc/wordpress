@@ -22,6 +22,9 @@ RUN set -eux; \
 # install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions)
 RUN set -ex; \
 	\
+	apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ \
+		gnu-libiconv=1.15-r3 \
+ 	; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 		freetype-dev \
@@ -115,6 +118,8 @@ RUN set -eux; \
 RUN set -eux; \
 	apk add --no-cache \
 	rsync
+
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 		
 VOLUME /var/www/html
 
